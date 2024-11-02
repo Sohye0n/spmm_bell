@@ -33,7 +33,6 @@ const int EXIT_UNSUPPORTED = 2;
 void copyFloatToHalf(const float* hA_values, __half* dA_values, int size) {
     // GPU 메모리에 __half 배열 할당
     __half* h_half = new __half[size];  // 호스트 메모리에 __half 배열을 생성
-
     // float 배열의 값을 __half로 변환
     for (int i = 0; i < size; ++i) {
         h_half[i] = __float2half(hA_values[i]);  // float을 __half로 변환
@@ -91,13 +90,7 @@ float spmm_bell_exe(BELL &A, DCN &B, DCN &C){
     CHECK_CUDA( cudaMemcpy(dA_columns, A.ellColInd,
                            A.num_blocks * sizeof(int),
                            cudaMemcpyHostToDevice) )
-    // CHECK_CUDA( cudaMemcpy(dA_values, A.ellValue,
-    //                        A.ell_cols * A.num_rows * sizeof(__half),
-    //                        cudaMemcpyHostToDevice) )
-    // CHECK_CUDA( cudaMemcpy(dB, B.value, B.num_rows * B.num_cols * sizeof(__half),
-    //                        cudaMemcpyHostToDevice) )
-    // CHECK_CUDA( cudaMemcpy(dC, C.value, C.num_rows * C.num_cols * sizeof(__half),
-    //                        cudaMemcpyHostToDevice) )
+
     //change CPU float arr -> GPU half arr
     copyFloatToHalf(A.ellValue, dA_values, A.ell_cols * A.num_rows);
     copyFloatToHalf(B.value, dB, B.num_rows * B.num_cols);
@@ -121,11 +114,13 @@ float spmm_bell_exe(BELL &A, DCN &B, DCN &C){
                                       A.ell_cols, dA_columns, dA_values,
                                       CUSPARSE_INDEX_32I,
                                       CUSPARSE_INDEX_BASE_ZERO, CUDA_R_16F) )
+
+
     // Create dense matrix B
-    CHECK_CUSPARSE( cusparseCreateDnMat(&matB, A.num_cols, B.num_cols, B.num_rows, dB,
+    CHECK_CUSPARSE( cusparseCreateDnMat(&matB, A.num_cols, B.num_cols, B.num_cols, dB,
                                         CUDA_R_16F, CUSPARSE_ORDER_ROW) )
     // Create dense matrix C
-    CHECK_CUSPARSE( cusparseCreateDnMat(&matC, A.num_rows, B.num_cols, A.num_rows, dC,
+    CHECK_CUSPARSE( cusparseCreateDnMat(&matC, A.num_rows, B.num_cols, B.num_cols, dC,
                                         CUDA_R_16F, CUSPARSE_ORDER_ROW) )
     // allocate an external buffer if needed
     CHECK_CUSPARSE( cusparseSpMM_bufferSize(
