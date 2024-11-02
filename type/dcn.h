@@ -1,4 +1,5 @@
 #pragma once
+#include <stdint.h> 
 #include <string>
 using namespace std;
 
@@ -8,7 +9,8 @@ class DCN{
         int num_cols;
         int ldb;
 
-        float* B_value;
+        float* value;
 
         DCN(int lhs_column, int rhs_column, bool option);
+        void print_value();
 };

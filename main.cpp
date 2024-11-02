@@ -3,6 +3,7 @@
 #include "bell.h"
 #include "dcn.h"
 #include "util.h"
+#include "spmm_bell.h"
 using namespace std;
 
 
@@ -22,6 +23,14 @@ int main(int argc, char* argv[]) {
         // 2.1 is BELL correct?
         lhs.print_bell();
 
+        // 2.2 is DCN correct?
+        rhs.print_value();
+
+        // 3. spmm
+        float avg_time = spmm_bell(lhs, rhs, result, 1);
+
+        //3.1 is spmm correct?
+        result.print_value();
 
 
     } catch (const exception& e) {
