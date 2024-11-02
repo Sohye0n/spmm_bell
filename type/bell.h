@@ -13,7 +13,6 @@ class BELL{
 
         int* ellColInd;
         float* ellValue;
-        int* ellColInd_idx;
 
         BELL(string filename);
         void read_smtx(string filename);

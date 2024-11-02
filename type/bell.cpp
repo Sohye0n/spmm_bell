@@ -130,9 +130,9 @@ void BELL::read_smtx(string filename){
                 last_tileIdx = cur_tileIdx;
                 local_col += 1;
 
+                value=1.0f;
                 ellValue[ellValue_Idx] = value;
                 ellColInd[ellColInd_Idx] = cur_tileIdx;
-
                 
             }
         }
@@ -156,6 +156,7 @@ void BELL::print_bell(){
     // ellColInd
     int r = num_rows / ell_blocksize;
     int c = ell_cols / ell_blocksize;
+    cout<<ell_cols<<" "<<num_blocks<<endl;
 
     cout<<"ellColInd"<<endl;
     for(int i = 0; i < r; i++){
