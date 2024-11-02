@@ -1,4 +1,6 @@
+#pragma once
 #include "bell.h"
+#include <stdint.h> 
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,19 +31,19 @@ void BELL::read_smtx(string filename){
             istringstream ss(line);
             string tmp;
             ss>>tmp;
-            cout<<"tmp : "<<tmp<<endl;
+            //cout<<"tmp : "<<tmp<<endl;
         }
 
         //1,2번째 라인
         if(getline(inn, line)){
             istringstream ss(line);
             ss>>num_rows>>num_cols>>num_value;
-            cout<<"num_rows : "<<num_rows<<" num_cols : "<<num_cols<<" num_value : "<<num_value<<endl;
+            //cout<<"num_rows : "<<num_rows<<" num_cols : "<<num_cols<<" num_value : "<<num_value<<endl;
         }
         if(getline(inn, line)){
             istringstream ss(line);
             ss>>ell_blocksize;
-            cout<<"ell_blocksize : "<<ell_blocksize<<endl;
+            //cout<<"ell_blocksize : "<<ell_blocksize<<endl;
         }
 
         //nonzero 부분
@@ -65,6 +67,7 @@ void BELL::read_smtx(string filename){
         }
         inn.close();
         ell_cols = maxi * ell_blocksize;
+        num_blocks = (ell_cols / ell_blocksize) * (num_rows / ell_blocksize);
 
 
         //메모리 할당
@@ -84,7 +87,7 @@ void BELL::read_smtx(string filename){
             value   = get<2>(data);
             cur_tileIdx = get<3>(data);
 
-            cout<<"r : "<<cur_row<<" c : "<<cur_col<<" tileIdx : "<<cur_tileIdx<<endl;
+            //cout<<"r : "<<cur_row<<" c : "<<cur_col<<" tileIdx : "<<cur_tileIdx<<endl;
 
             if(cur_row == last_row){
                 
@@ -94,8 +97,8 @@ void BELL::read_smtx(string filename){
                     ellValue_Idx = cur_row * ell_cols + cur_tileIdx * ell_blocksize + local_col;
                     ellColInd_Idx = (cur_row / ell_blocksize) * (ell_cols / ell_blocksize) + cur_tileIdx;
                     
-                    cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
-                    cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
+                    //cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
+                    //cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
                     
                     last_tileIdx = cur_tileIdx;
                     local_col += 1;
@@ -105,8 +108,8 @@ void BELL::read_smtx(string filename){
                 else{
                     ellValue_Idx = cur_row * ell_cols + cur_tileIdx * ell_blocksize + local_col;
                     ellColInd_Idx = (cur_row / ell_blocksize) * (ell_cols / ell_blocksize) + cur_tileIdx;
-                    cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
-                    cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
+                    //cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
+                    //cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
                     local_col += 1;
                 }
                 ellValue[ellValue_Idx] = value;
@@ -121,8 +124,8 @@ void BELL::read_smtx(string filename){
 
                 ellValue_Idx = cur_row * ell_cols + cur_tileIdx * ell_blocksize + local_col;
                 ellColInd_Idx = (cur_row / ell_blocksize) * (ell_cols / ell_blocksize) + cur_tileIdx;
-                cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
-                cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
+                //cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
+                //cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
 
                 last_tileIdx = cur_tileIdx;
                 local_col += 1;
@@ -171,5 +174,4 @@ void BELL::print_bell(){
         }
         printf("\n");
     }
-
 }
