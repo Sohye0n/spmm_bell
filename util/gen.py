@@ -150,12 +150,12 @@ def main():
             arr = type_simple_col(args)
 
         elif(type == 2):
-            for i in range(1):
+            for i in range(50):
                 type_random_row(args,i)
 
         # # random은 10세트씩 생성
         elif(type == 3):
-            for i in range(1):
+            for i in range(50):
                 type_random_col(args,i)
 
             

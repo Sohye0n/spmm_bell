@@ -53,13 +53,11 @@ void BELL::read_smtx(string filename){
                 //cout<<"cur_row :"<<cur_row<<"cur_ col : "<<cur_col<<endl;
                 // 각 row에 대해, 몇 개의 타일이 존재하는지 파악한다.
                 if(cur_row == last_row && last_col_tile != cur_col / ell_blocksize){
-                    cout<<"a"<<endl;
                     last_col_tile = cur_col / ell_blocksize;
                     cnt+=1;
                     maxi = max(maxi, cnt);
                 }
                 else if(cur_row != last_row){
-                    cout<<"b"<<endl;
                     maxi = max(maxi, cnt);
                     cnt=1;
                     last_row = cur_row;
@@ -153,7 +151,7 @@ void BELL::read_smtx(string filename){
 
 BELL::BELL(string filename){
     //1. add directory path to filename
-    string filepath =  "./data"+filename;
+    string filepath =  "./1104"+filename;
 
     //2. read smtx file
     read_smtx(filepath);
