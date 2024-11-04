@@ -39,18 +39,18 @@ int main(int argc, char* argv[]) {
         DCN  rhs    = DCN(lhs.num_cols, rhs_num_columns, true);
         DCN  result = DCN(lhs.num_rows, rhs.num_cols, false);
 
-        // // 2.1 is BELL correct?
-        // lhs.print_bell();
+        // 2.1 is BELL correct?
+        //lhs.print_bell();
 
-        // // 2.2 is DCN correct?
-        // rhs.print_value();
+        // 2.2 is DCN correct?
+        //rhs.print_value();
 
         // 3. spmm
         float avg_time = spmm_bell(lhs, rhs, result, 1);
         printf("%f",avg_time);
 
-        // //3.1 is spmm correct?
-        // result.print_value();
+        //3.1 is spmm correct?
+        //result.print_value();
 
         return 0;
 
@@ -62,11 +62,3 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-
-
-    // "-R 5120 -C 5120 -T 32"
-    // "-R 5120 -C 10240 -T 32"
-    // "-R 10240 -C 5120 -T 32"
-    // "-R 10240 -C 10240 -T 32"
-    // "-R 10240 -C 20480 -T 32"
-    // "-R 120480 -C 10240 -T 32"
