@@ -30,7 +30,6 @@ def to_smtx(args: argparse.Namespace, thickness_rate: int, tiles_per_pannel: int
         f1.write("%%MatrixMarket matrix coordinate real general\n")
 
         # 행 개수, 열 개수, non-zero 개수
-        print(total_tiles)
         arr.append([args.nRow, args.nCol, total_tiles * args.tileSize * args.tileSize * density_per_tile])
 
         # 타일 사이즈
@@ -69,53 +68,42 @@ def to_smtx(args: argparse.Namespace, thickness_rate: int, tiles_per_pannel: int
 #     return arr
 
 def type_simple_row(args: argparse.Namespace):
-    
-    ans=[]
 
     for pannel_thickness_rate in range(10,41,10):
-        pannel_thickness = int(pannel_thickness_rate * pannel_thickness_rate / 100 * args.nRow)
-        print(pannel_thickness)
+        pannel_thickness = int(args.nRow * pannel_thickness_rate / 100)
         result_per_thickness_rate=[]
 
         for i in range(pannel_thickness):
             for j in range(args.nCol):
                 result_per_thickness_rate.append([i,j,1.0])
 
-        ans.append(result_per_thickness_rate)
 
-    return ans
+        to_smtx(args, (pannel_thickness/args.tileSize), (args.nCol / args.tileSize), (args.nCol / args.tileSize) * (pannel_thickness/args.tileSize), result_per_thickness_rate, 0)
+
 
 
 def type_simple_col(args: argparse.Namespace):
 
-    ans=[]
-
     for pannel_thickness_rate in range(10,41,10):
-        pannel_thickness = int(pannel_thickness_rate * pannel_thickness_rate / 100.0 * args.nCol)
-
+        pannel_thickness = int(args.nCol * pannel_thickness_rate / 100.0)
         result_per_thickness_rate=[]
 
         for i in range(args.nRow):
             for j in range(pannel_thickness):
                 result_per_thickness_rate.append([i,j,1.0])
 
-        ans.append(result_per_thickness_rate)
-
-    return ans
+        to_smtx(args, (args.nRow / args.tileSize), (pannel_thickness/args.tileSize), (args.nRow / args.tileSize) * (pannel_thickness/args.tileSize), result_per_thickness_rate, 1)
 
 
 def type_random_row(args : argparse.Namespace, cnt: int):
 
-    for pannel_thickness_rate in range(10,11,10):
+    for pannel_thickness_rate in range(10,41,10):
         pannel_thickness = int((pannel_thickness_rate / 100.0) * (args.nRow // args.tileSize))
-        print("pannel_thickenss",pannel_thickness)
         
         for tiles_per_pannel in range(1,16,1):
-        #for tiles_per_pannel in range(1,2,1):
             arr = randomPick(1,(args.nCol // args.tileSize), tiles_per_pannel * pannel_thickness)
 
             result = [[i, arr[j]] for i in range(pannel_thickness) for j in range(i * tiles_per_pannel, (i + 1) * tiles_per_pannel)]
-            if(tiles_per_pannel == 1) : print(len(result))
 
             result_per_thickness_rate=[]
             
@@ -125,17 +113,17 @@ def type_random_row(args : argparse.Namespace, cnt: int):
                     for j in range(c * args.tileSize , (c+1)*args.tileSize):
                         result_per_thickness_rate.append([i,j,1.0])
 
-            to_smtx(args, pannel_thickness, tiles_per_pannel, len(arr), result_per_thickness_rate, 2, cnt)
+            sorted_data = sorted(result_per_thickness_rate, key=lambda x: (x[0], x[1], x[2]))
+
+            to_smtx(args, pannel_thickness, tiles_per_pannel, len(arr), sorted_data, 2, cnt)
 
 
-def type_random_col(args : argparse.Namespace):
-
-    ans=[]
+def type_random_col(args : argparse.Namespace, cnt: int):
 
     for pannel_thickness_rate in range(10,41,10):
-        pannel_thickness = int(pannel_thickness_rate * (pannel_thickness_rate / 100.0) * (args.nCol // args.tileSize))
+        pannel_thickness = int((pannel_thickness_rate / 100.0) * (args.nCol // args.tileSize))
         
-        for tiles_per_pannel in range(1,21,1):
+        for tiles_per_pannel in range(1,16,1):
             arr = randomPick(1,(args.nRow // args.tileSize), tiles_per_pannel * pannel_thickness)
 
             result = [[arr[j], i] for i in range(pannel_thickness) for j in range(i * tiles_per_pannel, (i + 1) * tiles_per_pannel)]
@@ -147,10 +135,9 @@ def type_random_col(args : argparse.Namespace):
                     for j in range(c * args.tileSize , (c+1)*args.tileSize):
                         result_per_thickness_rate.append([i,j,1.0])
 
-            
-            ans.append(result_per_thickness_rate)
+            sorted_data = sorted(result_per_thickness_rate, key=lambda x: (x[0], x[1], x[2]))
+            to_smtx(args, pannel_thickness, tiles_per_pannel, len(arr), sorted_data, 3, cnt)
 
-    return ans
 
 
 def main():
@@ -171,27 +158,22 @@ def main():
     for type in range(4):
         path=dir[type]
 
-        # simple은 하나씩만 생성
-        # if(type == 0):
-        #     arr = type_simple_row(args)
-        #     for thickness_rate, elem in enumerate(arr):
-        #         to_smtx(args, (1+thickness_rate)*10, arr, path)
+        #simple은 하나씩만 생성
+        if(type == 0):
+            arr = type_simple_row(args)
 
-        # elif(type == 1):
-        #     arr = type_simple_col(args)
-        #     for thickness_rate, elem in enumerate(arr):
-        #         to_smtx(args, (1+thickness_rate)*10, arr, path)
+        elif(type == 1):
+            arr = type_simple_col(args)
 
-        if(type == 2):
+        elif(type == 2):
             for i in range(1):
-                arr = type_random_row(args,i)
+                type_random_row(args,i)
 
         # # random은 10세트씩 생성
-        # elif(type == 3):
-        #     for i in range(10):
-        #         arr = type_random_col(args)
-        #         for thickness_rate, elem in enumerate(arr):
-        #             to_smtx(args, (1+thickness_rate//20)*10, arr, path, i)
+        elif(type == 3):
+            for i in range(1):
+                type_random_col(args,i)
+
             
 
 if __name__=="__main__":
