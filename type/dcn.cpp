@@ -30,3 +30,7 @@ void DCN::print_value(){
         printf("\n");
     }
 }
+
+DCN::~DCN(){
+    //if(value!=nullptr) free(value);
+}

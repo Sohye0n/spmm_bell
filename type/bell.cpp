@@ -140,13 +140,14 @@ void BELL::read_smtx(string filename){
 
     }
     else{
-        cerr<<"file open error : "<<strerror(errno)<<endl;
+        cerr<<"file open error : "<<strerror(errno)<<"file path : "<<filename<<endl;
     }
+    arr.clear();
 }
 
 BELL::BELL(string filename){
     //1. add directory path to filename
-    string filepath = "./data/" + filename;
+    string filepath =  "./data"+filename;
 
     //2. read smtx file
     read_smtx(filepath);

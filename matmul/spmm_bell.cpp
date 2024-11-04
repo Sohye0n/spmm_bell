@@ -32,17 +32,12 @@ const int EXIT_UNSUPPORTED = 2;
 
 void copyFloatToHalf(const float* hA_values, __half* dA_values, int size) {
     // GPU 메모리에 __half 배열 할당
-    __half* h_half = new __half[size];  // 호스트 메모리에 __half 배열을 생성
+    __half* h_half;
+    cudaMalloc((void**)&h_half, size * sizeof(__half));
     // float 배열의 값을 __half로 변환
     for (int i = 0; i < size; ++i) {
         h_half[i] = __float2half(hA_values[i]);  // float을 __half로 변환
     }
-
-    // 변환된 __half 배열을 GPU로 복사
-    cudaMemcpy(dA_values, h_half, size * sizeof(__half), cudaMemcpyHostToDevice);
-
-    // 호스트 메모리 해제
-    delete[] h_half;
 }
 
 void copyHalfToFloat(__half* dA_values, float* hA_values, int size) {
@@ -78,23 +73,34 @@ float spmm_bell_exe(BELL &A, DCN &B, DCN &C){
 
     // Device memory management
     int    *dA_columns;
-    __half *dA_values, *dB, *dC;
+    float *dA_values, *dB, *dC;
 
 
     CHECK_CUDA( cudaMalloc((void**) &dA_columns, A.num_blocks * sizeof(int)) )
     CHECK_CUDA( cudaMalloc((void**) &dA_values,
-                                    A.ell_cols * A.num_rows * sizeof(__half)) )
-    CHECK_CUDA( cudaMalloc((void**) &dB, B.num_rows * B.num_cols * sizeof(__half)) )
-    CHECK_CUDA( cudaMalloc((void**) &dC, C.num_rows * C.num_cols * sizeof(__half)) )
+                                    A.ell_cols * A.num_rows * sizeof(float)) )
+    CHECK_CUDA( cudaMalloc((void**) &dB, B.num_rows * B.num_cols * sizeof(float)) )
+    CHECK_CUDA( cudaMalloc((void**) &dC, C.num_rows * C.num_cols * sizeof(float)) )
 
     CHECK_CUDA( cudaMemcpy(dA_columns, A.ellColInd,
                            A.num_blocks * sizeof(int),
                            cudaMemcpyHostToDevice) )
 
-    //change CPU float arr -> GPU half arr
-    copyFloatToHalf(A.ellValue, dA_values, A.ell_cols * A.num_rows);
-    copyFloatToHalf(B.value, dB, B.num_rows * B.num_cols);
-    copyFloatToHalf(C.value, dC, C.num_rows * C.num_cols);
+    CHECK_CUDA( cudaMemcpy(dA_columns, A.ellColInd,
+                        A.num_blocks * sizeof(int),
+                        cudaMemcpyHostToDevice) )
+    CHECK_CUDA( cudaMemcpy(dA_values, A.ellValue,
+                           A.ell_cols * A.num_rows * sizeof(float),
+                           cudaMemcpyHostToDevice) )
+    CHECK_CUDA( cudaMemcpy(dB, B.value, B.num_cols * B.num_rows * sizeof(float),
+                           cudaMemcpyHostToDevice) )
+    CHECK_CUDA( cudaMemcpy(dC, C.value, C.num_cols * C.num_rows * sizeof(float),
+                           cudaMemcpyHostToDevice) )
+
+    // //change CPU float arr -> GPU half arr
+    // copyFloatToHalf(A.ellValue, dA_values, A.ell_cols * A.num_rows);
+    // copyFloatToHalf(B.value, dB, B.num_rows * B.num_cols);
+    // copyFloatToHalf(C.value, dC, C.num_rows * C.num_cols);
 
 
     // CUSPARSE APIs
@@ -159,9 +165,9 @@ float spmm_bell_exe(BELL &A, DCN &B, DCN &C){
     CHECK_CUSPARSE( cusparseDestroy(handle) )
 
     // device result check
-    // CHECK_CUDA( cudaMemcpy(C.value, dC, C.num_rows * C.num_cols * sizeof(__half),
-    //                        cudaMemcpyDeviceToHost) )
-    copyHalfToFloat(dC,C.value,C.num_rows * C.num_cols);
+    CHECK_CUDA( cudaMemcpy(C.value, dC, C.num_rows * C.num_cols * sizeof(float),
+                           cudaMemcpyDeviceToHost) )
+    //copyHalfToFloat(dC,C.value,C.num_rows * C.num_cols);
 
     // device memory deallocation
     CHECK_CUDA( cudaFree(dBuffer) )
