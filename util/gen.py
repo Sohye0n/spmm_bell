@@ -4,17 +4,24 @@ import os
 
 dir=["./data/simple_row/","./data/simple_col/","./data/random_row/","./data/random_col/"]
 
-def randomPick(s: int, e: int, cnt: int):
+import random
+
+def randomPick(s: int, e: int, cnt: int, tiles_per_pannel: int):
     interval = e - s
     result = []
     
     if cnt <= interval:
+        # cnt가 interval보다 작거나 같으면 비복원 샘플링
         result.extend(random.sample(range(s, e), cnt))
     else:
+        # cnt가 interval보다 크면 tiles_per_pannel 개씩 비복원 샘플링
         while len(result) < cnt:
-            result.extend(random.sample(range(s, e), min(interval, cnt - len(result))))
+            # interval이 현재의 result 길이보다 크거나 같다면 tiles_per_pannel을 샘플링
+            samples = random.sample(range(s, e), tiles_per_pannel)
+            result.extend(samples)
 
     return result[:cnt]
+
 
 
 def to_smtx(args: argparse.Namespace, thickness_rate: int, tiles_per_pannel: int, total_tiles: int, loc: list, path: int, cnt: int = 0):
@@ -44,28 +51,6 @@ def to_smtx(args: argparse.Namespace, thickness_rate: int, tiles_per_pannel: int
                 f1.write(str(word)+" ")
             f1.write("\n")
 
-
-# def type_simple_row(args : argparse.Namespace):
-
-#     stride=args.tileSize
-#     pannel_num = args.nRow // stride
-#     density_per_tile = 1/3
-#     nonzero_per_tile = round(args.tileSize * args.tileSize * density_per_tile)
-#     nonzero_per_row_in_tile = nonzero_per_tile / args.tileSize
-
-#     arr=[]
-
-#     for i in range(1,pannel_num+1):
-#         cnt_tile = args.tiles[i-1]
-#         for row in range((i-1)*stride, i*stride):
-#             for col in range(args.nCol):
-#                 tileId = col // args.tileSize
-#                 col_local = col - tileId * args.tileSize
-#                 # 범위 안의 타일이고, 타일의 local column idx < 타일의 row별 non zero 개수
-#                 if(tileId < cnt_tile and col_local < nonzero_per_row_in_tile ):
-#                     arr.append([row,col,1.0])
-
-#     return arr
 
 def type_simple_row(args: argparse.Namespace):
 
@@ -101,7 +86,7 @@ def type_random_row(args : argparse.Namespace, cnt: int):
         pannel_thickness = int((pannel_thickness_rate / 100.0) * (args.nRow // args.tileSize))
         
         for tiles_per_pannel in range(1,int(args.nCol / args.tileSize), int(0.1 * args.nCol / args.tileSize)):
-            arr = randomPick(0,(args.nCol // args.tileSize), tiles_per_pannel * pannel_thickness)
+            arr = randomPick(0,(args.nCol // args.tileSize), tiles_per_pannel * pannel_thickness, tiles_per_pannel)
 
             result = [[i, arr[j]] for i in range(pannel_thickness) for j in range(i * tiles_per_pannel, (i + 1) * tiles_per_pannel)]
 
@@ -123,8 +108,8 @@ def type_random_col(args : argparse.Namespace, cnt: int):
     for pannel_thickness_rate in range(10,41,10):
         pannel_thickness = int((pannel_thickness_rate / 100.0) * (args.nCol // args.tileSize))
         
-        for tiles_per_pannel in range(1,int(args.nCol / args.tileSize), int(0.1 * args.nCol / args.tileSize)):
-            arr = randomPick(0,(args.nRow // args.tileSize), tiles_per_pannel * pannel_thickness)
+        for tiles_per_pannel in range(1,int(args.nRow / args.tileSize), int(0.1 * args.nRow / args.tileSize)):
+            arr = randomPick(0,(args.nRow // args.tileSize), tiles_per_pannel * pannel_thickness, tiles_per_pannel)
 
             result = [[arr[j], i] for i in range(pannel_thickness) for j in range(i * tiles_per_pannel, (i + 1) * tiles_per_pannel)]
 

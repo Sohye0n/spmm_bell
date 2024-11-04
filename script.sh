@@ -47,9 +47,7 @@ options=(
     "-R 5120 -C 10240 -T 32"
     "-R 10240 -C 5120 -T 32"
     "-R 10240 -C 10240 -T 32"
-    "-R 10240 -C 20480 -T 32"
-    "-R 120480 -C 10240 -T 32"
-)
+ )
 
 for opt in "${options[@]}"; do
     python3 ./util/gen.py $opt
@@ -79,6 +77,7 @@ for opt in "${options[@]}"; do
 
                 result=$(./main "$relative_file" "512")
                 
+                echo $relative_file
                 results+=("$T,$A,$B,$K,$result")
             fi
         done
