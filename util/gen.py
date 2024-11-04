@@ -2,17 +2,17 @@ import argparse
 import random
 import os
 
-dir=["../data/simple_row/","../data/simple_col/","../data/random_row/","../data/random_col/"]
+dir=["./data/simple_row/","./data/simple_col/","./data/random_row/","./data/random_col/"]
 
 def randomPick(s: int, e: int, cnt: int):
-    interval = e - s + 1 
+    interval = e - s
     result = []
     
     if cnt <= interval:
-        result.extend(random.sample(range(s, e + 1), cnt))
+        result.extend(random.sample(range(s, e), cnt))
     else:
         while len(result) < cnt:
-            result.extend(random.sample(range(s, e + 1), min(interval, cnt - len(result))))
+            result.extend(random.sample(range(s, e), min(interval, cnt - len(result))))
 
     return result[:cnt]
 
@@ -100,8 +100,8 @@ def type_random_row(args : argparse.Namespace, cnt: int):
     for pannel_thickness_rate in range(10,41,10):
         pannel_thickness = int((pannel_thickness_rate / 100.0) * (args.nRow // args.tileSize))
         
-        for tiles_per_pannel in range(1,16,1):
-            arr = randomPick(1,(args.nCol // args.tileSize), tiles_per_pannel * pannel_thickness)
+        for tiles_per_pannel in range(1,int(args.nCol / args.tileSize), int(0.1 * args.nCol / args.tileSize)):
+            arr = randomPick(0,(args.nCol // args.tileSize), tiles_per_pannel * pannel_thickness)
 
             result = [[i, arr[j]] for i in range(pannel_thickness) for j in range(i * tiles_per_pannel, (i + 1) * tiles_per_pannel)]
 
@@ -123,8 +123,8 @@ def type_random_col(args : argparse.Namespace, cnt: int):
     for pannel_thickness_rate in range(10,41,10):
         pannel_thickness = int((pannel_thickness_rate / 100.0) * (args.nCol // args.tileSize))
         
-        for tiles_per_pannel in range(1,16,1):
-            arr = randomPick(1,(args.nRow // args.tileSize), tiles_per_pannel * pannel_thickness)
+        for tiles_per_pannel in range(1,int(args.nCol / args.tileSize), int(0.1 * args.nCol / args.tileSize)):
+            arr = randomPick(0,(args.nRow // args.tileSize), tiles_per_pannel * pannel_thickness)
 
             result = [[arr[j], i] for i in range(pannel_thickness) for j in range(i * tiles_per_pannel, (i + 1) * tiles_per_pannel)]
 
@@ -147,7 +147,6 @@ def main():
     parser.add_argument('-R','--nRow',type=int)
     parser.add_argument('-C','--nCol',type=int)
     parser.add_argument('-T','--tileSize',type=int)
-    parser.add_argument('-tiles','--tiles',type=int, nargs='+')
 
     args = parser.parse_args()
 

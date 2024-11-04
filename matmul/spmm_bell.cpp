@@ -184,6 +184,5 @@ float spmm_bell(BELL &lhs, DCN &rhs, DCN &result, int cnt){
     }
 
     mean = sum / cnt;
-    std::printf("mean time :%f\n",mean);
     return mean;
 }
