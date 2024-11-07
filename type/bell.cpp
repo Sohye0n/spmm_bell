@@ -50,10 +50,12 @@ void BELL::read_smtx(string filename){
         while(getline(inn, line)){
             istringstream ss(line);
             if(ss>>cur_row>>cur_col>>value){
+                //cout<<"cur_row :"<<cur_row<<"cur_ col : "<<cur_col<<endl;
                 // 각 row에 대해, 몇 개의 타일이 존재하는지 파악한다.
                 if(cur_row == last_row && last_col_tile != cur_col / ell_blocksize){
                     last_col_tile = cur_col / ell_blocksize;
                     cnt+=1;
+                    maxi = max(maxi, cnt);
                 }
                 else if(cur_row != last_row){
                     maxi = max(maxi, cnt);
@@ -68,11 +70,13 @@ void BELL::read_smtx(string filename){
         inn.close();
         ell_cols = maxi * ell_blocksize;
         num_blocks = (ell_cols / ell_blocksize) * (num_rows / ell_blocksize);
+        //cout<<"ell Cols :"<<ell_cols<<endl;
 
 
         //메모리 할당
         ellColInd =     (int*) malloc((num_rows / ell_blocksize) * (ell_cols / ell_blocksize) * sizeof(int));
         ellValue =      (float*) malloc(num_rows * ell_cols * sizeof(float));
+        //cout<<"ellColInd : "<<(num_rows / ell_blocksize) * (ell_cols / ell_blocksize)<<"  ellValue : "<<num_rows * ell_cols * sizeof(float)<<endl;
         fill(ellColInd, ellColInd+(num_rows / ell_blocksize) * (ell_cols / ell_blocksize), -1);
         fill(ellValue, ellValue + num_rows * ell_cols, 0.0f);
 
@@ -108,8 +112,8 @@ void BELL::read_smtx(string filename){
                 else{
                     ellValue_Idx = cur_row * ell_cols + cur_tileIdx * ell_blocksize + local_col;
                     ellColInd_Idx = (cur_row / ell_blocksize) * (ell_cols / ell_blocksize) + cur_tileIdx;
-                    //cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
-                    //cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
+                    // cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
+                    // cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
                     local_col += 1;
                 }
                 ellValue[ellValue_Idx] = value;
@@ -124,8 +128,8 @@ void BELL::read_smtx(string filename){
 
                 ellValue_Idx = cur_row * ell_cols + cur_tileIdx * ell_blocksize + local_col;
                 ellColInd_Idx = (cur_row / ell_blocksize) * (ell_cols / ell_blocksize) + cur_tileIdx;
-                //cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
-                //cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
+                // cout<<"ellValue row : "<<cur_row * ell_cols<<" | ellValue col : "<< cur_tileIdx * ell_blocksize + local_col <<endl;
+                // cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileIdx<<" tile Idx : "<<cur_tileIdx<<endl;
 
                 last_tileIdx = cur_tileIdx;
                 local_col += 1;
@@ -140,13 +144,14 @@ void BELL::read_smtx(string filename){
 
     }
     else{
-        cerr<<"file open error : "<<strerror(errno)<<endl;
+        cerr<<"file open error : "<<strerror(errno)<<"file path : "<<filename<<endl;
     }
+    arr.clear();
 }
 
 BELL::BELL(string filename){
     //1. add directory path to filename
-    string filepath = "./data/" + filename;
+    string filepath =  "./1104"+filename;
 
     //2. read smtx file
     read_smtx(filepath);

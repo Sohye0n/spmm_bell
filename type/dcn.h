@@ -12,5 +12,6 @@ class DCN{
         float* value;
 
         DCN(int lhs_column, int rhs_column, bool option);
+        ~DCN();
         void print_value();
 };
