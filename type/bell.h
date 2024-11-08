@@ -12,9 +12,11 @@ class BELL{
         int num_blocks;
 
         int* ellColInd;
+        int* ptr;
         float* ellValue;
 
-        BELL(string filename);
-        void read_smtx(string filename);
+        BELL(string filename, int tileSize);
+        void read_smtx(string filename, int tileSize);
         void print_bell();
+        void update_ptr(int pannelIdx);
 };

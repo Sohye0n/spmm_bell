@@ -13,6 +13,15 @@
 #include <filesystem>
 using namespace std;
 
+void BELL::update_ptr(int pannelIdx){
+    int ptr_width = num_cols / ell_blocksize;
+    int offset = pannelIdx * ptr_width;
+    
+    for (int i=1; i<ptr_width; i++){
+        ptr[offset+i] += ptr[offset+i-1];
+    }
+}
+
 void BELL::read_smtx(string filename, int tileSize){
     string tmp;
     ifstream inn(filename);
@@ -29,99 +38,97 @@ void BELL::read_smtx(string filename, int tileSize){
             istringstream ss(line);
             string tmp;
             ss>>tmp;
-            //cout<<"tmp : "<<tmp<<endl;
         }
 
         //1,2번째 라인
         if(getline(inn, line)){
             istringstream ss(line);
             ss>>num_rows>>num_cols>>num_value;
-            //cout<<"num_rows : "<<num_rows<<" num_cols : "<<num_cols<<" num_value : "<<num_value<<endl;
         }
         ell_blocksize = tileSize;
+        ptr = (int*)malloc((num_rows / tileSize) * (num_cols / tileSize) * sizeof(int));
 
 
         /*ellCols 알아내기*/        
         float value;
-        int cur_tileIdx;
-        int last_row=0, last_tileIdx=-1; // 0번째 행에서 시작하기 위해 초기화 
-        int cnt_tile_in_row=0; // 각 row에 포함된 tile 개수
-        int max_cnt_tile_in_row = 0; // 행렬의 모든 row 중에서 가장 많은 tile을 포함한 row의 tile 개수.
+        int cur_blockIdx; 
+        int cur_pannel, last_pannel;
+        int last_row=0, last_blockIdx=-1; // 0번째 행에서 시작하기 위해 초기화
+        int cnt_block_in_row=0; // 각 pannel에 포함된 block 개수
+        int cnt_block_in_pannel=0; // 각 pannel에 포함된 block 개수
+        int max_cnt_block_in_pannel = 0; // 행렬의 모든 row 중에서 가장 많은 block을 포함한 row의 block 개수.
         int cur_row, cur_col; //현재 row, col
+        int ptr_width = num_cols / ell_blocksize;
 
-        // 각 row에 대해, 몇 개의 타일이 존재하는지 파악한다.
+        // 각 row에 대해, 몇 개의 block이 존재하는지 파악한다.
         while(getline(inn, line)){
             istringstream ss(line);
             if(ss>>cur_row>>cur_col>>value){
-                //cout<<"cur_row : "<<cur_row<<"cur_ col : "<<cur_col<<endl;
+                //현재 원소가 포함된 block
+                cur_blockIdx = cur_col / ell_blocksize;
+                cur_pannel = cur_row / ell_blocksize;
+                last_pannel = last_row / ell_blocksize;
 
-                //현재 원소가 포함된 타일
-                cur_tileIdx = cur_col / ell_blocksize;
-
-                // 이전과 동일한 행이고, 이전에 카운트한 tile에 포함되지 않은 원소이면 tile 개수를 업데이트.
-                if(cur_row == last_row && last_tileIdx != cur_tileIdx){
-                    last_tileIdx = cur_tileIdx;
-                    cnt_tile_in_row+=1;
+                // 이전과 동일한 pannel && 카운트 한 적 없는 block -> block 개수를 업데이트.
+                if(cur_pannel == last_pannel && !ptr[cur_pannel * (num_cols / ell_blocksize) + cur_blockIdx]){
+                    cnt_block_in_pannel+=1;
+                }
+                // 다음 pannel로 넘어가면 -> block개수, 위치 업데이트.
+                else if(cur_pannel != last_pannel){
+                    //이전 행 관련 업데이트트
+                    max_cnt_block_in_pannel = max(max_cnt_block_in_pannel, cnt_block_in_pannel);
+                    update_ptr(last_pannel);
+    
+                    //새로운 행에 대한 처리
+                    cnt_block_in_pannel=1;
                 }
 
-                // 다음 행으로 넘어가면 tile개수와 현재 행을 업데이트 해준다.
-                else if(cur_row != last_row){
-                    max_cnt_tile_in_row = max(max_cnt_tile_in_row, cnt_tile_in_row); //이전 행의 타일 개수를 최대값과 비교하여 업데이트
-                    cnt_tile_in_row=1; //새로운 행의 타일 개수는 이제 1개
-                    last_row = cur_row;
-                    last_tileIdx = cur_tileIdx;
-                }
-
-                arr.push_back(make_tuple(cur_row, cur_col, value, cur_tileIdx, cnt_tile_in_row-1));
+                // row별 non-zero 블록 개수도 따로 카운트
+                if(cur_row == last_row && cur_blockIdx != last_blockIdx) cnt_block_in_row +=1;
+                else if(cur_row != last_row) cnt_block_in_row = 1;
+                
+                ptr[cur_pannel * ptr_width + cur_blockIdx] = 1;
+                last_row = cur_row;
+                last_blockIdx = cur_blockIdx;
+                arr.push_back(make_tuple(cur_row, cur_col, value, cur_blockIdx, cnt_block_in_row-1));
             }
         }
+        //마지막 pannel에 대한 업데이트
+        update_ptr(cur_row / ell_blocksize);
+        max_cnt_block_in_pannel = max(max_cnt_block_in_pannel, cnt_block_in_pannel);
+
+        //ell_cols 업데이트
+        ell_cols = max_cnt_block_in_pannel * ell_blocksize;
         inn.close();
-        max_cnt_tile_in_row = max(max_cnt_tile_in_row, cnt_tile_in_row); // non zero가 첫번째 row에만 존재하는 행렬을 위해
-        ell_cols = max_cnt_tile_in_row * ell_blocksize;
 
 
         //메모리 할당
         ellColInd =     (int*) malloc((num_rows / ell_blocksize) * (ell_cols / ell_blocksize) * sizeof(int));
         ellValue =      (float*) malloc(num_rows * ell_cols * sizeof(float));
-        //cout<<"ellColInd : "<<(num_rows / ell_blocksize) * (ell_cols / ell_blocksize)<<"  ellValue : "<<num_rows * ell_cols * sizeof(float)<<endl;
         fill(ellColInd, ellColInd+(num_rows / ell_blocksize) * (ell_cols / ell_blocksize), -1);
         fill(ellValue, ellValue + num_rows * ell_cols, 0.0f);
 
-
         last_row = 0;
-        last_tileIdx=-1;
-        int local_col=0;
-        int ellValue_Idx; int ellColInd_Idx; int cur_tileOrder;
+        last_blockIdx=-1;
+        cur_pannel = 0;
+        int ellColInd_width = ell_cols / ell_blocksize;
+        int cnt_nonZeroBlock_ahead;
+        int ellValue_Idx, ellColInd_Idx, cur_blockOrder;
         for (auto data:arr){
             cur_row = get<0>(data);
             cur_col = get<1>(data);
             value   = get<2>(data);
-            cur_tileIdx = get<3>(data);
-            cur_tileOrder = get<4>(data);
+            cur_blockIdx = get<3>(data);
+            cur_blockOrder = get<4>(data);
 
-            if(cur_row == last_row){
-                //다음 블록으로 넘어갔을 때
-                if(last_tileIdx != cur_tileIdx){
-                    local_col = 0;
-                    last_tileIdx = cur_tileIdx;
-                }
-            }
-
-            else{
-                last_tileIdx = cur_tileIdx;
-                last_row = cur_row;
-                local_col = 0;
-            }
-
-            ellValue_Idx = cur_row * ell_cols + cur_tileOrder * ell_blocksize + local_col;
-            ellColInd_Idx = (cur_row / ell_blocksize) * (ell_cols / ell_blocksize) + cur_tileOrder;
-            local_col += 1;
+            cur_pannel = cur_row / ell_blocksize;
+            cnt_nonZeroBlock_ahead = ptr[cur_pannel * ptr_width + cur_blockIdx] -1;
+            ellValue_Idx = cur_row * ell_cols + cnt_nonZeroBlock_ahead * ell_blocksize + (cur_col % ell_blocksize);
+            ellColInd_Idx = cur_pannel * ellColInd_width + cur_blockOrder;
 
             ellValue[ellValue_Idx] = value;
-            ellColInd[ellColInd_Idx] = cur_tileIdx;
+            ellColInd[ellColInd_Idx] = cur_blockIdx;
         }
-
-
     }
     else{
         cerr<<"file open error : "<<strerror(errno)<<"file path : "<<filename<<endl;
@@ -165,5 +172,5 @@ void BELL::print_bell(){
 
             // cout<<"r : "<<cur_row<<" c : "<<cur_col<<" tileIdx : "<<cur_tileIdx<<" value : "<<value<<endl;
 
-                // cout<<"ellValue row : "<<cur_row <<" | ellValue col : "<< cur_tileOrder * ell_blocksize + local_col <<endl;
-                // cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_tileOrder<<" tile Idx : "<<cur_tileIdx<<endl;
+                // cout<<"ellValue row : "<<cur_row <<" | ellValue col : "<< cur_blockOrder * ell_blocksize + local_col <<endl;
+                // cout<<"ellColInd row : "<<(cur_row / ell_blocksize)<<" | ellColInd col : "<< cur_blockOrder<<" tile Idx : "<<cur_tileIdx<<endl;
