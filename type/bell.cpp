@@ -136,10 +136,11 @@ void BELL::read_smtx(string filename, int tileSize){
     arr.clear();
 }
 
-BELL::BELL(string filename, int tileSize){
+BELL::BELL(string filename, int tileSize, int mode){
     //1. add directory path to filename
-    string filepath =  filename;
-
+    string filepath;
+    if(mode==1) filepath = "./data"+filename;
+    else filepath = filename;
     //2. read smtx file
     read_smtx(filepath, tileSize);
 }

@@ -4,4 +4,4 @@
 #include <tuple>
 using namespace std;
 
-tuple<string, int> get_args(int argc, char* argv[]);
+tuple<string, int, int, int> get_arg(int argc, char* argv[]);

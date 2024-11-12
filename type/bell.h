@@ -15,7 +15,7 @@ class BELL{
         int* ptr;
         float* ellValue;
 
-        BELL(string filename, int tileSize);
+        BELL(string filename, int tileSize, int mode);
         void read_smtx(string filename, int tileSize);
         void print_bell();
         void update_ptr(int pannelIdx);
