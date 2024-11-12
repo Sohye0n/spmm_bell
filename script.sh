@@ -61,12 +61,12 @@ for type in ${types[@]}; do
     python3 ./util/gen.py $command_default --type sr
 
     # 실행시간 측정
-    for i in {1..5}; do
+    for i in {1..4}; do
         echo "set $i"
         results=()
         for file in $type/simple_row/*.mtx; do
             if [ -f "$file" ]; then
-                echo "$file exists"
+                echo "$file"
                 base_name=$(basename "$file")
                 A=$(echo "$base_name" | cut -d'_' -f2)
                 B=$(echo "$base_name" | cut -d'_' -f3 | sed 's/\.mtx$//')  # 확장자 .mtx 제거
@@ -74,12 +74,15 @@ for type in ${types[@]}; do
                 # 파일에서 ./data 부분 제거
                 relative_file="${file#./data}"
 
+                # main 명령 실행 결과를 result 변수에 저장
                 result=$(./main "$relative_file" "$tileSize" "$rhsCol" "1")
-                echo $result
-                echo $A $B
+
+                # result 값을 소수점 두 자리로 맞추어 저장
+                printf -v result "%.2f" "$result"
                 results+=("$tileSize,$A,$B,$i,$result")
             fi
         done
+
 
         # csv 파일에 기록
         echo "saving results to csv file"
@@ -100,7 +103,7 @@ for type in ${types[@]}; do
     python3 ./util/gen.py $command_default --type sc
 
     # 실행시간 측정
-    for i in {1..5}; do
+    for i in {1..4}; do
         echo "set $i"
         results=()
         for file in $type/simple_col/*.mtx; do
@@ -115,6 +118,7 @@ for type in ${types[@]}; do
                 result=$(./main "$relative_file" "$tileSize" "$rhsCol" "1")
                 
                 echo $relative_file
+                printf -v result "%.2f" "$result"
                 results+=("$tileSize,$A,$B,$i,$result")
             fi
         done
@@ -134,7 +138,7 @@ for type in ${types[@]}; do
 
     # 데이터셋 생성
     echo "generating dataset for random_row"
-    for i in {1..1}; do
+    for i in {1..4}; do
         echo "set $i"
         results=()
         python3 ./util/gen.py $command_default --type rr
@@ -172,7 +176,7 @@ for type in ${types[@]}; do
 
     # 데이터셋 생성
     echo "generating dataset for random_col"
-    for i in {1..1}; do
+    for i in {1..4}; do
         echo "set $i"
         results=()
         python3 ./util/gen.py $command_default --type rc

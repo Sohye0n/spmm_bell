@@ -3,7 +3,7 @@
 #include "bell.h"
 #include "dcn.h"
 #include "util.h"
-//#include "spmm_bell.h"
+#include "spmm_bell.h"
 using namespace std;
 
 int type(string filename){
@@ -43,14 +43,14 @@ int main(int argc, char* argv[]) {
 
             // 2.1 is BELL correct?
             //lhs.print_bell();
-            printf("%f",1.0f);
+            //printf("%f",1.0f);
 
             // 2.2 is DCN correct?
             //rhs.print_value();
 
             // 3. spmm
-            //float avg_time = spmm_bell(lhs, rhs, result, 1);
-            //printf("%f",avg_time);
+            float avg_time = spmm_bell(lhs, rhs, result, 1);
+            printf("%f",avg_time);
 
             //3.1 is spmm correct?
             //result.print_value();
@@ -64,17 +64,15 @@ int main(int argc, char* argv[]) {
             DCN  result = DCN(lhs.num_rows, rhs.num_cols, false);
 
             // 2.1 is BELL correct?
-            lhs.print_bell();
-
-            printf("%f",2.0f);
+            //lhs.print_bell();
 
 
             // 2.2 is DCN correct?
             //rhs.print_value();
 
             // 3. spmm
-            //float avg_time = spmm_bell(lhs, rhs, result, 1);
-            //printf("%f",avg_time);
+            float avg_time = spmm_bell(lhs, rhs, result, 1);
+            printf("%f",avg_time);
 
             //3.1 is spmm correct?
             //result.print_value();

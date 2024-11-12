@@ -47,6 +47,7 @@ void BELL::read_smtx(string filename, int tileSize){
         }
         ell_blocksize = tileSize;
         ptr = (int*)malloc((num_rows / tileSize) * (num_cols / tileSize) * sizeof(int));
+        fill(ptr, ptr+(num_rows / tileSize) * (num_cols / tileSize), 0);
 
 
         /*ellCols 알아내기*/        
@@ -85,8 +86,9 @@ void BELL::read_smtx(string filename, int tileSize){
 
                 // row별 non-zero 블록 개수도 따로 카운트
                 if(cur_row == last_row && cur_blockIdx != last_blockIdx) cnt_block_in_row +=1;
-                else if(cur_row != last_row) cnt_block_in_row = 1;
-                
+                else if(cur_row != last_row) {
+                    cnt_block_in_row = 1;
+                }
                 ptr[cur_pannel * ptr_width + cur_blockIdx] = 1;
                 last_row = cur_row;
                 last_blockIdx = cur_blockIdx;
@@ -99,6 +101,8 @@ void BELL::read_smtx(string filename, int tileSize){
 
         //ell_cols 업데이트
         ell_cols = max_cnt_block_in_pannel * ell_blocksize;
+        //num_blocks 저장
+        num_blocks = (ell_cols / ell_blocksize) * (num_rows / ell_blocksize);
         inn.close();
 
 
@@ -137,8 +141,6 @@ void BELL::read_smtx(string filename, int tileSize){
 }
 
 BELL::BELL(string filename, int tileSize, int mode){
-    //1. add directory path to filename
-    string filepath =  "./data"+filename;
 
     //2. read smtx file
     string filepath;
