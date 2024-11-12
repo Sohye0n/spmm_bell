@@ -141,7 +141,7 @@ BELL::BELL(string filename, int tileSize, int mode){
     string filepath;
     if(mode==1) filepath = "./data"+filename;
     else filepath = filename;
-    //2. read smtx file
+    //2. read smtx file!
     read_smtx(filepath, tileSize);
 }
 
