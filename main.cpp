@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
     try {
         // 1. get params
         auto [filename, tileSize, rhs_num_columns, mode] = get_arg(argc, argv);
+        //cout<<"filename : "<<filename<<"tileSize : "<<tileSize<<"rhs_num_columns"<<rhs_num_columns<<endl;
 
         // run by shell script
         if(mode==1){
@@ -64,18 +65,19 @@ int main(int argc, char* argv[]) {
             DCN  result = DCN(lhs.num_rows, rhs.num_cols, false);
 
             // 2.1 is BELL correct?
-            //lhs.print_bell();
+            lhs.print_bell();
 
 
             // 2.2 is DCN correct?
-            //rhs.print_value();
+            rhs.print_value();
 
             // 3. spmm
             float avg_time = spmm_bell(lhs, rhs, result, 1);
             printf("%f",avg_time);
 
             //3.1 is spmm correct?
-            //result.print_value();
+            printf("\n");
+            result.print_value();
         }
 
         return 0;

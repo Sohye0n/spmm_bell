@@ -4,13 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <cuda_fp16.h>  
 
 DCN::DCN(int lhs_column, int rhs_column, bool option){
     num_rows = lhs_column;
     num_cols = rhs_column;
     ldb = num_rows;
 
-    value = (float*)malloc(num_rows * num_cols * sizeof(float));
+    value = (__half*)malloc(num_rows * num_cols * sizeof(__half));
     
     // rhs
     if(option){
@@ -25,7 +26,7 @@ DCN::DCN(int lhs_column, int rhs_column, bool option){
 void DCN::print_value(){
     for(int i=0; i<num_rows; i++){
         for(int j=0; j<num_cols; j++){
-            printf("% .1f ",value[i*num_cols + j]);
+            printf("% .1f ",__half2float(value[i*num_cols + j]));
         }
         printf("\n");
     }

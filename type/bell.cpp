@@ -11,6 +11,7 @@
 #include <vector>
 #include <tuple>
 #include <filesystem>
+#include <cuda_fp16.h>  
 using namespace std;
 
 void BELL::update_ptr(int pannelIdx){
@@ -27,7 +28,7 @@ void BELL::read_smtx(string filename, int tileSize){
     ifstream inn(filename);
     int num_value = 0;
 
-    vector<tuple<int, int, float, int, int>> arr;
+    vector<tuple<int, int, __half, int, int>> arr;
 
     if(inn.is_open()){
         
@@ -51,7 +52,8 @@ void BELL::read_smtx(string filename, int tileSize){
 
 
         /*ellCols 알아내기*/        
-        float value;
+        __half value;
+        float v1;
         int cur_blockIdx; 
         int cur_pannel, last_pannel;
         int last_row=0, last_blockIdx=-1; // 0번째 행에서 시작하기 위해 초기화
@@ -64,7 +66,8 @@ void BELL::read_smtx(string filename, int tileSize){
         // 각 row에 대해, 몇 개의 block이 존재하는지 파악한다.
         while(getline(inn, line)){
             istringstream ss(line);
-            if(ss>>cur_row>>cur_col>>value){
+            if(ss>>cur_row>>cur_col>>v1){
+                value = (__half)v1;
                 //현재 원소가 포함된 block
                 cur_blockIdx = cur_col / ell_blocksize;
                 cur_pannel = cur_row / ell_blocksize;
@@ -108,7 +111,7 @@ void BELL::read_smtx(string filename, int tileSize){
 
         //메모리 할당
         ellColInd =     (int*) malloc((num_rows / ell_blocksize) * (ell_cols / ell_blocksize) * sizeof(int));
-        ellValue =      (float*) malloc(num_rows * ell_cols * sizeof(float));
+        ellValue =      (__half*) malloc(num_rows * ell_cols * sizeof(__half));
         fill(ellColInd, ellColInd+(num_rows / ell_blocksize) * (ell_cols / ell_blocksize), -1);
         fill(ellValue, ellValue + num_rows * ell_cols, 0.0f);
 
@@ -169,7 +172,7 @@ void BELL::print_bell(){
     c = ell_cols;
     for(int i = 0; i < r; i++){
         for(int j = 0; j < c; j++){
-            printf("%.1f ",ellValue[i*c + j]);
+            printf("%.1f ", __half2float(ellValue[i*c + j]));
         }
         printf("\n");
     }

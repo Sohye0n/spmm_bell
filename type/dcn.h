@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h> 
 #include <string>
+#include <cuda_fp16.h>  
 using namespace std;
 
 class DCN{
@@ -9,7 +10,7 @@ class DCN{
         int num_cols;
         int ldb;
 
-        float* value;
+        __half* value;
 
         DCN(int lhs_column, int rhs_column, bool option);
         ~DCN();

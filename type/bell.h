@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include <stdint.h> 
+#include <stdint.h>
+#include <cuda_fp16.h>  
 using namespace std;
 
 class BELL{
@@ -13,7 +14,7 @@ class BELL{
 
         int* ellColInd;
         int* ptr;
-        float* ellValue;
+        __half* ellValue;
 
         BELL(string filename, int tileSize, int mode);
         void read_smtx(string filename, int tileSize);
