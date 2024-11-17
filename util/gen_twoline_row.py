@@ -9,17 +9,19 @@ directory = "/twoline_row"
 # stride 달리 하면서 여러개 생성
 def twoline(args : argparse.Namespace, filepath: str):
 
-    number_of_nonzero_pannels = int(args.nRow / args.blockSize)
-    nonzero_blocks_per_pannel = 2
+    number_of_nonzero_pannels = 2
+    nonzero_blocks_per_pannel = int(args.nCol / args.blockSize)
     total_nonzero_blocks = number_of_nonzero_pannels * nonzero_blocks_per_pannel
 
     for stride in range(4,32,4): # 블록 간 여백 길이(block 단위)
 
         result = []
-        for i in range(args.nCol): #col
-            for j in range(args.blockSize):
-                result.append([j,i,1.0]) #left
-                result.append([j+stride*args.blockSize,i,1.0]) #right #블록 단위 좌표가 아니라서 stride * blockSize
+        for i in range(args.blockSize): #row
+            for j in range(args.nCol):
+                result.append([i,j,1.0])
+        for i in range(args.blockSize):
+            for j in range(args.nCol):
+                result.append([i+stride*args.blockSize,j,1.0])
 
         to_mtx(filepath,stride,nonzero_blocks_per_pannel,args.nRow,args.nCol,args.blockSize,total_nonzero_blocks,result)
 

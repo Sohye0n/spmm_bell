@@ -19,6 +19,7 @@ def twoline(args : argparse.Namespace, filepath: str):
         for i in range(args.nRow): #row
             for j in range(args.blockSize):
                 result.append([i,j,1.0]) #left
+            for j in range(args.blockSize):
                 result.append([i,j+stride*args.blockSize,1.0]) #right #블록 단위 좌표가 아니라서 stride * blockSize
 
         to_mtx(filepath,stride,nonzero_blocks_per_pannel,args.nRow,args.nCol,args.blockSize,total_nonzero_blocks,result)
