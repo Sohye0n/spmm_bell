@@ -39,7 +39,7 @@ def main():
 
     # gen.py만 단독 실행 - 따로 디렉토리 생성./data/R_C/long 생성. (이미 존재할 시 pass)
     offset += ("/" + str(args.nRow) + "_" + str(args.nCol))
-    if(args.mode == "exclusive"): os.makedirs(offset+directory, exist_ok=True)
+    os.makedirs(offset+directory, exist_ok=True)
 
     long(args, offset+directory+"/")
 
