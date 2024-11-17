@@ -8,15 +8,15 @@ directory = "/long"
 
 def long(args : argparse.Namespace, filepath: str):
     number_of_nonzero_panels = args.panelNum
-    nonzero_blocks_per_panel = args.nCol / args.blockSize
+    nonzero_blocks_per_panel = int(args.nCol / args.blockSize)
     total_nonzero_blocks = number_of_nonzero_panels * nonzero_blocks_per_panel
 
     #데이터 생성 - 512번째 row까지 4씩 밀면서 측정
-    #for topgap in range(0,512,4):
-    for topgap in range(0,5,4):
+    for topgap in range(0,512,4):
+    #for topgap in range(0,5,4):
         result=[]
-        for i in range(args.nRow):
-            for j in range(number_of_nonzero_panels * args.blockSize):
+        for i in range(number_of_nonzero_panels * args.blockSize):
+            for j in range(args.nCol):
                 result.append([topgap+i,j,1.0])
 
         to_mtx(filepath,number_of_nonzero_panels,nonzero_blocks_per_panel,args.nRow,args.nCol,args.blockSize,total_nonzero_blocks,result,topgap)

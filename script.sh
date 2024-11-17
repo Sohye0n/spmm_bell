@@ -61,7 +61,7 @@ for type in ${types[@]}; do
     python3 ./util/gen.py $command_default --type sr
 
     # 실행시간 측정
-    for i in {1..4}; do
+    for i in {1..2}; do
         echo "set $i"
         results=()
         for file in $type/simple_row/*.mtx; do
@@ -103,7 +103,7 @@ for type in ${types[@]}; do
     python3 ./util/gen.py $command_default --type sc
 
     # 실행시간 측정
-    for i in {1..4}; do
+    for i in {1..2}; do
         echo "set $i"
         results=()
         for file in $type/simple_col/*.mtx; do
@@ -138,7 +138,7 @@ for type in ${types[@]}; do
 
     # 데이터셋 생성
     echo "generating dataset for random_row"
-    for i in {1..4}; do
+    for i in {1..2}; do
         echo "set $i"
         results=()
         python3 ./util/gen.py $command_default --type rr
@@ -176,7 +176,7 @@ for type in ${types[@]}; do
 
     # 데이터셋 생성
     echo "generating dataset for random_col"
-    for i in {1..4}; do
+    for i in {1..2}; do
         echo "set $i"
         results=()
         python3 ./util/gen.py $command_default --type rc

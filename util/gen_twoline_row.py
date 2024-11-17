@@ -9,7 +9,7 @@ directory = "/twoline_row"
 # stride 달리 하면서 여러개 생성
 def twoline(args : argparse.Namespace, filepath: str):
 
-    number_of_nonzero_pannels = args.nRow / args.blockSize
+    number_of_nonzero_pannels = int(args.nRow / args.blockSize)
     nonzero_blocks_per_pannel = 2
     total_nonzero_blocks = number_of_nonzero_pannels * nonzero_blocks_per_pannel
 

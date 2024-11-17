@@ -24,6 +24,7 @@ def stair(args : argparse.Namespace, filepath: str):
         for i in range(0,h): # row
             for j in range(0,max_nonzero_blocks-1): #col
                 result_block.append([j+i,j])
+        result_block.sort(key=lambda x:(x[0],x[1]))
 
         # block 단위 좌표 -> 원래 행렬 기준 좌표로 변환
         for elem in result_block:
