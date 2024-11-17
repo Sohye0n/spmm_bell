@@ -5,6 +5,12 @@ from matplotlib import pyplot as plt
 import re
 import dataframe_image as dfi
 
+from draw_skinny import draw_skinny
+from draw_zigzag import draw_zigzag
+from draw_stair import draw_stair
+from draw_twoline_col import draw_twoline_col
+from draw_twoline_row import draw_twoline_row
+
 data = os.path.join(os.getcwd(), "./data")
 excution_time = {}
 
@@ -200,8 +206,14 @@ def main():
         for file in csv_files:
             subdir_name = os.path.basename(os.path.normpath(subdir))
 
-            if(file[:-8]=="random"): processRandom(file[:-4]+"_"+subdir_name, subdir+file)
-            elif(file[:-8]=="simple"): processSimple(file[:-4]+"_"+subdir_name, subdir+file)
+            if(file[:-8]=="random"): pass#processRandom(file[:-4]+"_"+subdir_name, subdir+file)
+            elif(file[:-8]=="simple"): pass#processSimple(file[:-4]+"_"+subdir_name, subdir+file)
+            elif("skinny" in file): pass#draw_skinny(file[:-4]+"_"+subdir_name, subdir+file)
+            elif("zigzag" in file): pass#draw_zigzag(file[:-4]+"_"+subdir_name, subdir+file)
+            elif("stair" in file): pass#draw_stair(file[:-4]+"_"+subdir_name, subdir+file)
+            elif("twoline_col" in file): draw_twoline_col(file[:-4]+"_"+subdir_name, subdir+file)
+            elif("twoline_row" in file): draw_twoline_row(file[:-4]+"_"+subdir_name, subdir+file)
+            
             # random 끼리 실행 시간을 비교하기 위해
             if(file[:-4]=="random_row" or file[:-4]=="random_col"):
                 randoms.append(subdir+file)
