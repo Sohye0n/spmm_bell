@@ -20,4 +20,10 @@ class BELL{
         void read_smtx(string filename, int tileSize);
         void print_bell();
         void update_ptr(int pannelIdx);
+
+        ~BELL(){
+            delete [] ellColInd;
+            delete [] ptr;
+            delete [] ellValue;
+        }
 };

@@ -13,6 +13,8 @@ class DCN{
         __half* value;
 
         DCN(int lhs_column, int rhs_column, bool option);
-        ~DCN();
+        ~DCN(){
+            delete [] value;
+        }
         void print_value();
 };
