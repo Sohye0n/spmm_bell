@@ -14,7 +14,7 @@ def zigzag(args : argparse.Namespace, filepath: str):
     total_nonzero_blocks = number_of_nonzero_panels * nonzero_blocks_per_panel
 
     # block 단위로 non-zero 좌표 표시
-    for stride in range(4,32,4): # 블록 간 여백 길이
+    for stride in range(4,args.stride,4): # 블록 간 여백 길이
 
         result_block=[]
         result = []
@@ -41,6 +41,7 @@ def main():
     parser.add_argument('-R','--nRow',type=int)
     parser.add_argument('-C','--nCol',type=int)
     parser.add_argument('-B','--blockSize',type=int)
+    parser.add_argument('-S','--stride',type=int, default=32)
 
     #gen.py만 단독 실행할 때 옵션
     parser.add_argument('--mode',type=str, default="shell")

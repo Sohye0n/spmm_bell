@@ -9,11 +9,11 @@ directory = "/twoline_col"
 # stride 달리 하면서 여러개 생성
 def twoline(args : argparse.Namespace, filepath: str):
 
-    number_of_nonzero_pannels = int(args.nRow / args.blockSize)
-    nonzero_blocks_per_pannel = 2
+    number_of_nonzero_pannels = 2
+    nonzero_blocks_per_pannel = int(args.nRow / args.blockSize)
     total_nonzero_blocks = number_of_nonzero_pannels * nonzero_blocks_per_pannel
 
-    for stride in range(4,32,4): # 블록 간 여백 길이(block 단위)
+    for stride in range(4,args.stride,4): # 블록 간 여백 길이(block 단위)
 
         result = []
         for i in range(args.nRow): #row
@@ -32,6 +32,7 @@ def main():
     parser.add_argument('-R','--nRow',type=int)
     parser.add_argument('-C','--nCol',type=int)
     parser.add_argument('-B','--blockSize',type=int)
+    parser.add_argument('-S','--stride',type=int, default=32)
 
     #gen.py만 단독 실행할 때 옵션
     parser.add_argument('--mode',type=str, default="shell")

@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 import re
 import dataframe_image as dfi
 
+from draw_long import draw_long
 from draw_skinny import draw_skinny
 from draw_zigzag import draw_zigzag
 from draw_stair import draw_stair
@@ -208,8 +209,9 @@ def main():
 
             if(file[:-8]=="random"): pass#processRandom(file[:-4]+"_"+subdir_name, subdir+file)
             elif(file[:-8]=="simple"): pass#processSimple(file[:-4]+"_"+subdir_name, subdir+file)
-            elif("skinny" in file): pass#draw_skinny(file[:-4]+"_"+subdir_name, subdir+file)
-            elif("zigzag" in file): pass#draw_zigzag(file[:-4]+"_"+subdir_name, subdir+file)
+            elif("long" in file): draw_long(file[:-4]+"_"+subdir_name, subdir+file)
+            elif("skinny" in file): draw_skinny(file[:-4]+"_"+subdir_name, subdir+file)
+            elif("zigzag" in file): draw_zigzag(file[:-4]+"_"+subdir_name, subdir+file)
             elif("stair" in file): pass#draw_stair(file[:-4]+"_"+subdir_name, subdir+file)
             elif("twoline_col" in file): draw_twoline_col(file[:-4]+"_"+subdir_name, subdir+file)
             elif("twoline_row" in file): draw_twoline_row(file[:-4]+"_"+subdir_name, subdir+file)

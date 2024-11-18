@@ -12,7 +12,8 @@ def draw_long(name:str, filepath:str):
     try:
         num_batch = df.iloc[:,3].nunique() # 총 몇 번 돌려서 평균 냈는지
         num_point = int(len(df)/num_batch)
-        xticks = sorted( list(map(lambda x:int(x[1:]),list(df.iloc[:,1].unique()))) )
+        #xticks = sorted( list(map(lambda x:int(x[1:]),list(df.iloc[:,1].unique()))) )
+        xticks = sorted(list(df.iloc[:,1].unique().astype(int))) 
         legends = list(df.iloc[:,0].unique().astype(int))
     except:
         print("error")
@@ -22,7 +23,8 @@ def draw_long(name:str, filepath:str):
     #time
     #leftgap 순으로 정렬해야 해서 1,4번째 인덱스 모두 가져옴
     gap_time = df.iloc[:, [1, 4]].values.tolist()
-    gap_time = [[int(x[0][1:]), x[1]] for x in gap_time]
+    #gap_time = [[int(x[0][1:]), x[1]] for x in gap_time]
+    gap_time = [[x[0], x[1]] for x in gap_time]
 
     gap_time.sort(key=lambda x:x[0])
     time = [x[1] for x in gap_time]
