@@ -78,10 +78,10 @@ for type in ${types[@]}; do
 
         # 데이터셋 생성
         echo "generating dataset for skinny"
-        python3 ./util/gen_skinny.py $command_default
+        python3 ./util/gen_skinny.py $command_default -P 16
 
         # 실행시간 측정
-        for i in {1..3}; do
+        for i in {1..5}; do
             echo "set $i"
             results=()
             for file in $type/skinny/*.mtx; do
@@ -106,10 +106,9 @@ for type in ${types[@]}; do
             # csv 파일에 기록
             echo "saving results to csv file"
             printf "%s\n" "${results[@]}" >> "$csv_file"
-
-            # mtx 파일들은 모두 삭제
-            rm -f $type/skinny/*.mtx
         done
+        # mtx 파일들은 모두 삭제
+        rm -f $type/skinny/*.mtx
     fi
     #####################################################
 
@@ -122,10 +121,10 @@ for type in ${types[@]}; do
 
         # 데이터셋 생성
         echo "generating dataset for long"
-        python3 ./util/gen_long.py $command_default
+        python3 ./util/gen_long.py $command_default -P 16
 
         # 실행시간 측정
-        for i in {1..3}; do
+        for i in {1..5}; do
             echo "set $i"
             results=()
             for file in $type/long/*.mtx; do
@@ -150,10 +149,9 @@ for type in ${types[@]}; do
             # csv 파일에 기록
             echo "saving results to csv file"
             printf "%s\n" "${results[@]}" >> "$csv_file"
-
-            # mtx 파일들은 모두 삭제
-            rm -f $type/long/*.mtx
         done
+        # mtx 파일들은 모두 삭제
+        rm -f $type/long/*.mtx
     fi
     #######################################################
 
@@ -168,7 +166,7 @@ for type in ${types[@]}; do
         python3 ./util/gen_stair.py $command_default
 
         # 실행시간 측정
-        for i in {1..3}; do
+        for i in {1..5}; do
             echo "set $i"
             results=()
             for file in $type/stair/*.mtx; do
@@ -193,10 +191,9 @@ for type in ${types[@]}; do
             # csv 파일에 기록
             echo "saving results to csv file"
             printf "%s\n" "${results[@]}" >> "$csv_file"
-
-            # mtx 파일들은 모두 삭제
-            rm -f $type/stair/*.mtx
         done
+        # mtx 파일들은 모두 삭제
+        rm -f $type/stair/*.mtx
     fi
     ######################################################
 
@@ -208,10 +205,10 @@ for type in ${types[@]}; do
 
         # 데이터셋 생성
         echo "generating dataset for zigzag"
-        python3 ./util/gen_zigzag.py $command_default
+        python3 ./util/gen_zigzag.py $command_default -S 64
 
         # 실행시간 측정
-        for i in {1..3}; do
+        for i in {1..5}; do
             echo "set $i"
             results=()
             for file in $type/zigzag/*.mtx; do
@@ -236,10 +233,9 @@ for type in ${types[@]}; do
             # csv 파일에 기록
             echo "saving results to csv file"
             printf "%s\n" "${results[@]}" >> "$csv_file"
-
-            # mtx 파일들은 모두 삭제
-            rm -f $type/zigzag/*.mtx
         done
+        # mtx 파일들은 모두 삭제
+        rm -f $type/zigzag/*.mtx
     fi
     ######################################################
 
@@ -251,10 +247,10 @@ for type in ${types[@]}; do
 
         # 데이터셋 생성
         echo "generating dataset for twoline_col"
-        python3 ./util/gen_twoline_col.py $command_default
+        python3 ./util/gen_twoline_col.py $command_default -S 64
 
         # 실행시간 측정
-        for i in {1..3}; do
+        for i in {1..5}; do
             echo "set $i"
             results=()
             for file in $type/twoline_col/*.mtx; do
@@ -279,10 +275,9 @@ for type in ${types[@]}; do
             # csv 파일에 기록
             echo "saving results to csv file"
             printf "%s\n" "${results[@]}" >> "$csv_file"
-
-            # mtx 파일들은 모두 삭제
-            rm -f $type/twoline_col/*.mtx
         done
+        # mtx 파일들은 모두 삭제
+        rm -f $type/twoline_col/*.mtx
     fi
     ######################################################
 
@@ -294,10 +289,10 @@ for type in ${types[@]}; do
 
         # 데이터셋 생성
         echo "generating dataset for twoline_row"
-        python3 ./util/gen_twoline_row.py $command_default
+        python3 ./util/gen_twoline_row.py $command_default -S 64
 
         # 실행시간 측정
-        for i in {1..3}; do
+        for i in {1..5}; do
             echo "set $i"
             results=()
             for file in $type/twoline_row/*.mtx; do
@@ -323,8 +318,8 @@ for type in ${types[@]}; do
             echo "saving results to csv file"
             printf "%s\n" "${results[@]}" >> "$csv_file"
 
-            # mtx 파일들은 모두 삭제
-            rm -f $type/twoline_row/*.mtx
         done
+        # mtx 파일들은 모두 삭제
+        rm -f $type/twoline_row/*.mtx
     fi
 done
