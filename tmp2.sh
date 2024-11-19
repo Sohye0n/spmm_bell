@@ -69,10 +69,10 @@ for type in ${types[@]}; do
         echo "generating dataset for zigzag"
         python3 ./util/gen_zigzag.py $command_default -S 64 -P $i
 
-        for j in {1..1}; do
+        for j in {1..5}; do
             # 실행시간 측정
-            for i in {1..1}; do
-                echo "set $i"
+            for a in {1..1}; do
+                echo "set $a"
                 results=()
                 for file in $type/zigzag/*.mtx; do
                     if [ -f "$file" ]; then
@@ -90,7 +90,7 @@ for type in ${types[@]}; do
                         result=$(./main "$relative_file" "$blockSize" "$rhsCol" "1")
 
                         # result 값을 소수점 두 자리로 맞추어 저장
-                        results+=("$blockSize,$A,$B,$i,$result")
+                        results+=("$blockSize,$A,$B,$a,$result")
                     fi
                 done
 
@@ -101,7 +101,7 @@ for type in ${types[@]}; do
             done
         done
         # mtx 파일들은 모두 삭제
-        #rm -f $type/zigzag/*.mtx
+        rm -f $type/zigzag/*.mtx
     done
 
     for i in $(seq 4 4 96); do
@@ -114,10 +114,10 @@ for type in ${types[@]}; do
         # 데이터셋 생성
         echo "generating dataset for skinny"
         python3 ./util/gen_skinny.py $command_default -P $i
-        for j in {1..1}; do
+        for j in {1..5}; do
             # 실행시간 측정
-            for i in {1..1}; do
-                echo "set $i"
+            for a in {1..1}; do
+                echo "set $a"
                 results=()
                 for file in $type/skinny/*.mtx; do
                     if [ -f "$file" ]; then
@@ -133,7 +133,7 @@ for type in ${types[@]}; do
                         result=$(./main "$relative_file" "$blockSize" "$rhsCol" "1")
 
                         # result 값을 소수점 두 자리로 맞추어 저장
-                        results+=("$blockSize,$A,$B,$i,$result")
+                        results+=("$blockSize,$A,$B,$a,$result")
                     fi
                 done
                 # csv 파일에 기록
@@ -142,7 +142,7 @@ for type in ${types[@]}; do
             done
         done
         # mtx 파일들은 모두 삭제
-        #rm -f $type/skinny/*.mtx
+        rm -f $type/skinny/*.mtx
     done
 
     for i in $(seq 4 4 96); do
@@ -155,10 +155,10 @@ for type in ${types[@]}; do
         # 데이터셋 생성
         echo "generating dataset for twoline_col"
         python3 ./util/gen_twoline_col.py $command_default -S 64 -P $i
-        for j in {1..1}; do
+        for j in {1..5}; do
             # 실행시간 측정
-            for i in {1..1}; do
-                echo "set $i"
+            for a in {1..3}; do
+                echo "set $a"
                 results=()
                 for file in $type/twoline_col/*.mtx; do
                     if [ -f "$file" ]; then
@@ -174,7 +174,7 @@ for type in ${types[@]}; do
                         result=$(./main "$relative_file" "$blockSize" "$rhsCol" "1")
 
                         # result 값을 소수점 두 자리로 맞추어 저장
-                        results+=("$blockSize,$A,$B,$i,$result")
+                        results+=("$blockSize,$A,$B,$a,$result")
                     fi
                 done
 
@@ -185,6 +185,6 @@ for type in ${types[@]}; do
             done
         done
         # mtx 파일들은 모두 삭제
-        #rm -f $type/twoline_col/*.mtx
+        rm -f $type/twoline_col/*.mtx
     done
 done
