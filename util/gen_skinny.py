@@ -13,8 +13,8 @@ def skinny(args : argparse.Namespace, filepath: str):
 
     #데이터 생성 - column의 k%까지 4씩 밀면서 측정 (텐서코어가 4x4)
     #column이 20480이니까 2.5%하면 512까지. (만약 터미널 터져서 10240 가면 5%로 조정)
-    for leftgap in range(0,512,4):
-    #for leftgap in range(0,5,4):
+    #for leftgap in range(0,512,4):
+    for leftgap in range(0,5,4):
         result=[]
         for i in range(args.nRow):
             for j in range(number_of_nonzero_panels * args.blockSize):

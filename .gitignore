@@ -1,3 +1,5 @@
 # Ignore all object files
 *.o
 ./data/*
+./vscode
+*.png

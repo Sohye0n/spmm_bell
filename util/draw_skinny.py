@@ -39,4 +39,4 @@ def draw_skinny(name:str, filepath:str):
             sum+=time[i*num_batch+j]
         avg_time.append(sum/num_batch)
 
-    drawGraph(avg_time, xticks, name, filepath, xticks, legends, "gap from left",fsize=(80,20))
+    drawGraph(avg_time, xticks, name, filepath, xticks, legends, "gap from left",fsize=(80,20),multiples=[32])
